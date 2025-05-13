@@ -67,7 +67,7 @@ c.DockerSpawner.volumes = {
 }
 
 # User containers will connect to JupyterHub container
-c.DockerSpawner.hub_connect_ip = '34.46.145.204'
+c.DockerSpawner.hub_ip_connect = '34.46.145.204'
 
 # Secure the connection between the hub and notebook servers
 c.DockerSpawner.hub_connect_url = 'https://34.46.145.204:7443'
