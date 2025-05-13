@@ -35,7 +35,7 @@ ST = YourState
 L = YourCity
 O = YourOrganization
 OU = YourOrganizationalUnit
-CN = 34.173.62.66
+CN = 10.96.20.57
 
 [v3_req]
 keyUsage = keyEncipherment, dataEncipherment
@@ -45,10 +45,9 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = localhost
 DNS.2 = jupyterhub
-DNS.3 = 34.173.62.66
+DNS.3 = 10.96.20.57
 IP.1 = 127.0.0.1
-IP.2 = 10.128.15.218
-IP.3 = 34.173.62.66
+IP.2 = 10.96.20.57
 EOL
     fi
     
