@@ -1,0 +1,55 @@
+FROM jupyter/scipy-notebook:latest
+
+USER root
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    vim \
+    ffmpeg \
+    curl \
+    wget \
+    software-properties-common \
+    ca-certificates \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file
+COPY requirements.txt /tmp/requirements.txt
+
+# Install Python packages
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Install JupyterLab extensions
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager \
+    @jupyterlab/toc
+
+# Set up JupyterLab as default
+ENV JUPYTER_ENABLE_LAB=yes
+
+# Create a script to allow users to install their own packages
+COPY user-packages.sh /usr/local/bin/user-packages.sh
+RUN chmod +x /usr/local/bin/user-packages.sh
+
+# Set notebook server to trust HTTPS
+RUN mkdir -p /etc/jupyter/
+RUN echo "c.NotebookApp.trust_xheaders = True" > /etc/jupyter/jupyter_notebook_config.py
+RUN echo "c.NotebookApp.tornado_settings = {'headers': {'Content-Security-Policy': \"frame-ancestors 'self'\"}}" >> /etc/jupyter/jupyter_notebook_config.py
+
+# Add post-start hook to run user customization
+RUN echo "c.Spawner.cmd = ['jupyterhub-singleuser', '--SingleUserNotebookApp.pre_spawn_hook=/usr/local/bin/user-packages.sh']" \
+    >> /etc/jupyter/jupyter_notebook_config.py
+
+# Switch back to jovyan user
+USER jovyan
+
+# Create directory for user data
+RUN mkdir -p /home/jovyan/work
+
+# Expose Jupyter port
+EXPOSE 8888
+
+# Set working directory
+WORKDIR /home/jovyan/work

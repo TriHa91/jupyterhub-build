@@ -1,0 +1,40 @@
+services:
+  jupyterhub:
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyterhub
+    container_name: jupyterhub
+    restart: always
+    volumes:
+      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - ./userlist:/srv/jupyterhub/userlist
+      - ./ssl:/srv/jupyterhub/ssl
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./jupyterhub_data:/srv/jupyterhub/data
+    ports:
+      - "7443:7443"  # HTTPS port
+      - "8000:8000"  # HTTP port (redirect to HTTPS)
+    environment:
+      - DOCKER_NETWORK_NAME=network_test
+      - CONFIGPROXY_AUTH_TOKEN=${CONFIGPROXY_AUTH_TOKEN}
+      - JUPYTERHUB_COOKIE_SECRET=${JUPYTERHUB_COOKIE_SECRET}
+      # - ADMIN_PASSWORD=Rrkts@2025
+    networks:
+      - network_test
+
+  # Template image for user containers
+  notebook:
+    build:
+      context: .
+      dockerfile: Dockerfile.notebook
+    image: custom-notebook:latest
+    networks:
+      - network_test
+    command: echo "This is a template image for JupyterHub to spawn user containers"
+    deploy:
+      replicas: 0
+
+networks:
+  network_test:
+    name: network_test
+    external: true
