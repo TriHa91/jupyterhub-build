@@ -67,10 +67,10 @@ c.DockerSpawner.volumes = {
 }
 
 # User containers will connect to JupyterHub container
-c.DockerSpawner.hub_connect_ip = 'jupyterhub'
+c.DockerSpawner.hub_connect_ip = '34.46.145.204'
 
 # Secure the connection between the hub and notebook servers
-c.DockerSpawner.hub_connect_url = 'https://jupyterhub:7443'
+c.DockerSpawner.hub_connect_url = 'https://34.46.145.204:7443'
 
 # Set container environment variables
 c.DockerSpawner.environment = {
@@ -119,8 +119,9 @@ c.JupyterHub.services = [
 ]
 
 # Optional: Define a hook to run when a server is spawned
-def post_spawn_hook(spawner):
+def pre_spawn_hook(spawner):
     """Called after a user's server is started."""
     username = spawner.user.name
     # Could add custom logic here, such as copying welcome files
     # or setting up user environment
+c.Spawner.pre_spawn_hook = pre_spawn_hook
