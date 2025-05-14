@@ -8,7 +8,7 @@ c = get_config()
 c.JupyterHub.ip = '0.0.0.0'
 c.JupyterHub.port = 7443  # Use HTTPS port
 c.JupyterHub.hub_ip = '0.0.0.0'
-
+c.JupyterHub.hub_port = 6043
 # SSL Configuration
 c.JupyterHub.ssl_key = '/srv/jupyterhub/ssl/jupyterhub.key'
 c.JupyterHub.ssl_cert = '/srv/jupyterhub/ssl/jupyterhub.crt'
@@ -67,10 +67,10 @@ c.DockerSpawner.volumes = {
 }
 
 # User containers will connect to JupyterHub container
-c.DockerSpawner.hub_ip_connect = '34.46.145.204'
+c.DockerSpawner.hub_ip_connect = '10.96.20.57'
 
 # Secure the connection between the hub and notebook servers
-c.DockerSpawner.hub_connect_url = 'https://34.46.145.204:7443'
+c.DockerSpawner.hub_connect_url = 'https://10.96.20.57:7443'
 
 # Set container environment variables
 c.DockerSpawner.environment = {
