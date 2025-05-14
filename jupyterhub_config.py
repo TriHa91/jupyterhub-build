@@ -1,4 +1,4 @@
-import os
+import os, nativeauthenticator
 import sys
 from dockerspawner import DockerSpawner
 
@@ -13,11 +13,12 @@ c.JupyterHub.hub_port = 6043
 c.JupyterHub.ssl_key = '/srv/jupyterhub/ssl/jupyterhub.key'
 c.JupyterHub.ssl_cert = '/srv/jupyterhub/ssl/jupyterhub.crt'
 
+c.JupyterHub.template_paths = [f"{os.path.dirname(nativeauthenticator.__file__)}/templates/"]
 # HTTP to HTTPS redirect
 c.JupyterHub.redirect_to_server = False
-#c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', 
-#                                  '--redirect-port', '8000',
-#                                  '--ip', '0.0.0.0']
+c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', 
+                                  '--redirect-port', '8000',
+                                  '--ip', '0.0.0.0']
 
 # Use secure cookie and proxy token (take from environment)
 c.JupyterHub.cookie_secret = os.environ['JUPYTERHUB_COOKIE_SECRET']
@@ -27,18 +28,18 @@ c.ConfigurableHTTPProxy.auth_token = os.environ['CONFIGPROXY_AUTH_TOKEN']
 c.JupyterHub.cookie_options = {"secure": True}
 
 # Use Native Authenticator to handle user authentication with passwords
-# c.JupyterHub.authenticator_class = 'nativeauthenticator.NativeAuthenticator'
-c.JupyterHub.authenticator_class = 'firstuseauthenticator.FirstUseAuthenticator'
+c.JupyterHub.authenticator_class = 'nativeauthenticator.NativeAuthenticator'
+#c.JupyterHub.authenticator_class = 'firstuseauthenticator.FirstUseAuthenticator'
 
 # Enable password encryption
 c.NativeAuthenticator.check_common_password = True
 c.NativeAuthenticator.minimum_password_length = 10
 
 # Add admin users
-c.Authenticator.admin_users = {'admin'}
-
+c.NativeAuthenticator.admin_users = {'admin'}
+c.NativeAuthenticator.allowed_users = {'admin'}
 # Set whether users need admin approval to login after signup
-c.NativeAuthenticator.open_signup = False  # Require admin approval for new users
+c.NativeAuthenticator.open_signup = True  # Require admin approval for new users
 
 # Allow users to change their password
 c.NativeAuthenticator.allow_password_change = True
@@ -50,7 +51,8 @@ c.NativeAuthenticator.enable_signup = True
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
 # Spawn containers from this image
-c.DockerSpawner.image = 'custom-notebook:latest'
+c.DockerSpawner.name_template = 'notebook-{username}'
+c.DockerSpawner.image = 'jupyter-scipy-notebook:latest'
 
 # Connect containers to this Docker network
 c.DockerSpawner.network_name = os.environ.get('DOCKER_NETWORK_NAME')
@@ -59,18 +61,19 @@ c.DockerSpawner.use_internal_ip = True
 
 # Set notebook directory
 notebook_dir = '/home/jovyan/work'
+
 c.DockerSpawner.notebook_dir = notebook_dir
 
 # Mount the user's Docker volume for data persistence
 # This is the key to data persistence - Docker named volumes persist even when containers are removed
 c.DockerSpawner.volumes = {
-    'jupyterhub-user-{username}': notebook_dir
+    'jupyterhub-notebook-data-{username}': notebook_dir
 }
 
 # User containers will connect to JupyterHub container
 #c.DockerSpawner.hub_ip_connect = 'jupyterhub'
-c.JupyterHub.hub_connect_ip = os.environ.get('HUB_IP', 'jupyterhub')
-c.DockerSpawner.hub_connect_ip = os.environ.get('HUB_IP', 'jupyterhub')
+#c.JupyterHub.hub_ip_connect = os.environ.get('HUB_IP', 'jupyterhub')
+#c.DockerSpawner.hub_ip_connect = os.environ.get('HUB_IP', 'jupyterhub')
 c.DockerSpawner.debug = True
 # Secure the connection between the hub and notebook servers
 c.DockerSpawner.hub_connect_url = 'http://jupyterhub:6043'
@@ -120,6 +123,9 @@ c.JupyterHub.services = [
         ],
     }
 ]
+
+c.JupyterHub.active_server_limit = 3
+c.JupyterHub.concurrent_spawn_limit = 5
 
 # Optional: Define a hook to run when a server is spawned
 def pre_spawn_hook(spawner):

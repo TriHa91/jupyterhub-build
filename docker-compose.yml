@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.jupyterhub
-    container_name: jupyterhub
+    container_name: Jupyterhub-server
     restart: always
     volumes:
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
@@ -27,12 +27,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.notebook
-    image: custom-notebook:latest
+    container_name: Jupyterhub-notebook-build
+    image: jupyter-scipy-notebook:latest
     networks:
       - network_test
-    #network_mode: "host"
-    #ports:
-      #- "6043:6043"
+    #volumes:
+      #- /home/trihn1/jupyterhub-build/data:/home/jovyan/work
     command: echo "This is a template image for JupyterHub to spawn user containers"
     #deploy:
       #replicas: 0
