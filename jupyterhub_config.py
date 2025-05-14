@@ -53,8 +53,9 @@ c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 c.DockerSpawner.image = 'custom-notebook:latest'
 
 # Connect containers to this Docker network
-c.DockerSpawner.network_name = os.environ.get('DOCKER_NETWORK_NAME', 'jupyterhub_network')
-c.DockerSpawner.use_internal_ip = True
+c.DockerSpawner.network_name = os.environ.get('DOCKER_NETWORK_NAME')
+c.DockerSpawner.use_internal_ip = False
+c.SwarmSpawner.host_ip = '127.0.0.1'
 
 # Set notebook directory
 notebook_dir = '/home/jovyan/work'
@@ -67,10 +68,10 @@ c.DockerSpawner.volumes = {
 }
 
 # User containers will connect to JupyterHub container
-c.DockerSpawner.hub_ip_connect = '10.96.20.57'
+c.DockerSpawner.hub_ip_connect = 'jupyterhub'
 
 # Secure the connection between the hub and notebook servers
-c.DockerSpawner.hub_connect_url = 'https://10.96.20.57:7443'
+#c.DockerSpawner.hub_connect_url = 'https://jupyterhub:7443'
 
 # Set container environment variables
 c.DockerSpawner.environment = {
