@@ -28,14 +28,17 @@ services:
       context: .
       dockerfile: Dockerfile.notebook
     image: custom-notebook:latest
-    network_mode: "host"
-    ports:
-      - "6043:6043"
+    networks:
+      - network_test
+    #network_mode: "host"
+    #ports:
+      #- "6043:6043"
     command: echo "This is a template image for JupyterHub to spawn user containers"
-    deploy:
-      replicas: 0
+    #deploy:
+      #replicas: 0
 
 networks:
   network_test:
     name: network_test
     external: true
+

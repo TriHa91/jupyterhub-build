@@ -15,9 +15,9 @@ c.JupyterHub.ssl_cert = '/srv/jupyterhub/ssl/jupyterhub.crt'
 
 # HTTP to HTTPS redirect
 c.JupyterHub.redirect_to_server = False
-c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', 
-                                  '--redirect-port', '8000',
-                                  '--ip', '0.0.0.0']
+#c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', 
+#                                  '--redirect-port', '8000',
+#                                  '--ip', '0.0.0.0']
 
 # Use secure cookie and proxy token (take from environment)
 c.JupyterHub.cookie_secret = os.environ['JUPYTERHUB_COOKIE_SECRET']
@@ -54,8 +54,8 @@ c.DockerSpawner.image = 'custom-notebook:latest'
 
 # Connect containers to this Docker network
 c.DockerSpawner.network_name = os.environ.get('DOCKER_NETWORK_NAME')
-c.DockerSpawner.use_internal_ip = False
-c.SwarmSpawner.host_ip = '127.0.0.1'
+c.DockerSpawner.use_internal_ip = True
+#c.SwarmSpawner.host_ip = '127.0.0.1'
 
 # Set notebook directory
 notebook_dir = '/home/jovyan/work'
@@ -68,10 +68,12 @@ c.DockerSpawner.volumes = {
 }
 
 # User containers will connect to JupyterHub container
-c.DockerSpawner.hub_ip_connect = 'jupyterhub'
-
+#c.DockerSpawner.hub_ip_connect = 'jupyterhub'
+c.JupyterHub.hub_connect_ip = os.environ.get('HUB_IP', 'jupyterhub')
+c.DockerSpawner.hub_connect_ip = os.environ.get('HUB_IP', 'jupyterhub')
+c.DockerSpawner.debug = True
 # Secure the connection between the hub and notebook servers
-#c.DockerSpawner.hub_connect_url = 'https://jupyterhub:7443'
+c.DockerSpawner.hub_connect_url = 'http://jupyterhub:6043'
 
 # Set container environment variables
 c.DockerSpawner.environment = {
