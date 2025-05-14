@@ -49,7 +49,7 @@ USER jovyan
 RUN mkdir -p /home/jovyan/work
 
 # Expose Jupyter port
-EXPOSE 8888
+# EXPOSE 8888
 
 # Set working directory
 WORKDIR /home/jovyan/work
