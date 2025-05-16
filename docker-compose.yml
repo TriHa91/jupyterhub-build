@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.jupyterhub
-    container_name: Jupyterhub-server
+    container_name: jupyterhub-server
     restart: always
     volumes:
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.notebook
-    container_name: Jupyterhub-notebook-build
+    container_name: jupyterhub-notebook-build
     image: jupyter-scipy-notebook:latest
     networks:
       - network_test

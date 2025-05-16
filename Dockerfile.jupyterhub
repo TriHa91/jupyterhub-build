@@ -19,10 +19,11 @@ RUN apt-get update && \
 # Install JupyterHub dependencies
 RUN pip3 install --no-cache-dir \
     dockerspawner==12.1.0 \
-    jupyterhub-idle-culler==1.2.1 \
+    jupyterhub-idle-culler>=1.4.0 \
     jupyterhub-nativeauthenticator \
     jupyterhub-firstuseauthenticator \
     oauthenticator==14.2.0 \
+    psycopg2-binary \
     pymysql==1.1.0
 
 # Create directories
@@ -31,6 +32,12 @@ WORKDIR /srv/jupyterhub
 
 # Create a default config file if it doesn't exist
 RUN touch jupyterhub_config.py
+
+RUN echo '#!/bin/bash\ncurl -f http://localhost:8000/hub/health || exit 1' > /usr/local/bin/healthcheck.sh && \
+    chmod +x /usr/local/bin/healthcheck.sh
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD /usr/local/bin/healthcheck.sh
 
 # exec jupyterhub -f /srv/jupyterhub/jupyterhub_config.py\n' > /srv/jupyterhub/entrypoint.sh
 
