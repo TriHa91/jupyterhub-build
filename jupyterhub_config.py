@@ -28,8 +28,7 @@ c.ConfigurableHTTPProxy.check_running_interval = 3000
 c.JupyterHub.cookie_options = {"secure": True}
 
 # Use Native Authenticator to handle user authentication with passwords
-#c.JupyterHub.authenticator_class = 'nativeauthenticator.NativeAuthenticator'
-c.JupyterHub.authenticator_class = 'native'
+c.JupyterHub.authenticator_class = 'nativeauthenticator.NativeAuthenticator'
 #c.JupyterHub.authenticator_class = 'firstuseauthenticator.FirstUseAuthenticator'
 
 # Enable password encryption
@@ -89,8 +88,7 @@ c.DockerSpawner.environment = {
 
 # Remove containers when they're shut down
 # Data is still preserved in the Docker volume even though containers are removed
-c.DockerSpawner.remove = True
-
+c.DockerSpawner.remove = False
 # Set resource limits (customize as needed)
 #c.Spawner.cpu_limit = 2
 #c.Spawner.mem_limit = 4294967296  # 4GB in bytes

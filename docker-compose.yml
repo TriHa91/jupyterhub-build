@@ -18,11 +18,17 @@ services:
       - DOCKER_NETWORK_NAME=network_test
       - CONFIGPROXY_AUTH_TOKEN=${CONFIGPROXY_AUTH_TOKEN}
       - JUPYTERHUB_COOKIE_SECRET=${JUPYTERHUB_COOKIE_SECRET}
-      # - ADMIN_PASSWORD=Rrkts@2025
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 16G
+        reservations:
+          cpus: '4'
+          memory: 8G
     networks:
       - network_test
 
-  # Template image for user containers
   notebook:
     build:
       context: .
@@ -31,11 +37,9 @@ services:
     image: jupyter-scipy-notebook:latest
     networks:
       - network_test
-    #volumes:
-      #- /home/trihn1/jupyterhub-build/data:/home/jovyan/work
-    command: echo "This is a template image for JupyterHub to spawn user containers"
-    #deploy:
-      #replicas: 0
+    command: echo "Notebook container template"
+    deploy:
+      replicas: 0
 
 networks:
   network_test:
