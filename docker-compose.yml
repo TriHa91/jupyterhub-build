@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
-      - ./userlist:/srv/jupyterhub/userlist
+      #- ./userlist:/srv/jupyterhub/userlist
       - ./ssl:/srv/jupyterhub/ssl
       - /var/run/docker.sock:/var/run/docker.sock
       - ./jupyterhub_data:/srv/jupyterhub/data

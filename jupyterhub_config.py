@@ -8,7 +8,7 @@ c = get_config()
 c.JupyterHub.ip = '0.0.0.0'
 c.JupyterHub.port = 7443  # Use HTTPS port
 c.JupyterHub.hub_ip = '0.0.0.0'
-#c.JupyterHub.hub_port = 6043
+
 # SSL Configuration
 c.JupyterHub.ssl_key = '/srv/jupyterhub/ssl/jupyterhub.key'
 c.JupyterHub.ssl_cert = '/srv/jupyterhub/ssl/jupyterhub.crt'
@@ -41,15 +41,12 @@ c.NativeAuthenticator.minimum_password_length = 10
 c.Authenticator.allowed_users = {'rrktsadmin'}
 c.Authenticator.admin_users = {'rrktsadmin'}
 # Set whether users need admin approval to login after signup
-c.NativeAuthenticator.open_signup = True  # Require admin approval for new users
+c.NativeAuthenticator.open_signup = True
 
-# Allow users to change their password
-#c.NativeAuthenticator.allow_password_change = True
-
-# Configure user creation
+# Configure user registration
 c.NativeAuthenticator.enable_signup = True
 
-# Spawn with Docker
+# Spawn with Docker Spawner
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
 # Spawn containers from this image
@@ -59,26 +56,18 @@ c.DockerSpawner.image = 'jupyter-scipy-notebook:latest'
 # Connect containers to this Docker network
 c.DockerSpawner.network_name = os.environ.get('DOCKER_NETWORK_NAME')
 c.DockerSpawner.use_internal_ip = True
-#c.SwarmSpawner.host_ip = '127.0.0.1'
 
 # Set notebook directory
 notebook_dir = '/home/jovyan/work'
 
 c.DockerSpawner.notebook_dir = notebook_dir
 
-# Mount the user's Docker volume for data persistence
-# This is the key to data persistence - Docker named volumes persist even when containers are removed
+# Mount the user's Docker volume for data persistence, Docker named volumes persist even when containers are removed
 c.DockerSpawner.volumes = {
     'jupyterhub-notebook-data-{username}': notebook_dir
 }
 
-# User containers will connect to JupyterHub container
-#c.DockerSpawner.hub_ip_connect = 'jupyterhub'
-#c.JupyterHub.hub_ip_connect = os.environ.get('HUB_IP', 'jupyterhub')
-#c.DockerSpawner.hub_ip_connect = os.environ.get('HUB_IP', 'jupyterhub')
 c.DockerSpawner.debug = True
-# Secure the connection between the hub and notebook servers
-#c.DockerSpawner.hub_connect_url = 'http://jupyterhub:6043'
 
 # Set container environment variables
 c.DockerSpawner.environment = {
@@ -89,9 +78,6 @@ c.DockerSpawner.environment = {
 # Remove containers when they're shut down
 # Data is still preserved in the Docker volume even though containers are removed
 c.DockerSpawner.remove = False
-# Set resource limits (customize as needed)
-#c.Spawner.cpu_limit = 2
-#c.Spawner.mem_limit = 4294967296  # 4GB in bytes
 
 # Set timeouts
 c.Spawner.http_timeout = 60
@@ -159,6 +145,5 @@ def pre_spawn_hook(spawner):
     else:
         spawner.cpu_limit = 6
         spawner.mem_limit = 17179869184  # 16GB in bytes
-# Could add custom logic here, such as copying welcome files
-    # or setting up user environment
+
 c.Spawner.pre_spawn_hook = pre_spawn_hook

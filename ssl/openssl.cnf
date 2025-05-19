@@ -4,11 +4,11 @@ req_extensions = v3_req
 prompt = no
 
 [req_distinguished_name]
-C = US
-ST = YourState
-L = YourCity
-O = YourOrganization
-OU = YourOrganizationalUnit
+C = VN
+ST = HCM
+L = OCB
+O = OCB
+OU = RRKTS
 CN = 10.96.20.57
 
 [v3_req]

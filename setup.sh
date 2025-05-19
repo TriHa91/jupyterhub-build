@@ -30,11 +30,11 @@ req_extensions = v3_req
 prompt = no
 
 [req_distinguished_name]
-C = US
-ST = YourState
-L = YourCity
-O = YourOrganization
-OU = YourOrganizationalUnit
+C = VN
+ST = HCM
+L = OCB
+O = OCB
+OU = RRKTS
 CN = 10.96.20.57
 
 [v3_req]
@@ -61,19 +61,9 @@ EOL
     chmod 644 ssl/jupyterhub.crt
 fi
 
-# Create users list if it doesn't exist
-if [ ! -f userlist ]; then
-    echo "Creating default userlist with admin user..."
-    echo "admin admin" > userlist
-fi
-
 # Build and start the services
 echo "Building images and starting services..."
 docker compose up -d
 
 echo "JupyterHub is now running!"
-echo "Access via HTTPS at: https://localhost/"
-echo "First time setup: Go to https://localhost/hub/signup to create the admin account"
-echo ""
-echo "IMPORTANT: Since we're using self-signed certificates, you'll need to accept"
-echo "the security warning in your browser when you first connect."
+echo "Access via HTTPS at: https://10.96.20.57:7443/"
