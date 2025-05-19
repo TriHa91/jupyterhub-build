@@ -37,7 +37,7 @@ services:
     image: jupyter-scipy-notebook:latest
     networks:
       - network_test
-    command: echo "Notebook container template"
+    command: echo "Notebook container image template"
     deploy:
       replicas: 0
 
