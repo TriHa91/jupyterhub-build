@@ -39,7 +39,7 @@ prompt = no
 [req_distinguished_name]
 C = VN
 ST = HCM
-L = OCB
+L = HCM
 O = OCB
 OU = RRKTS
 CN = $HOST_IP
